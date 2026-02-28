@@ -13,9 +13,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { SignOutDialog } from '@/components/sign-out-dialog'
+import { useAuth } from "@/context/use-auth"
 
 export function ProfileDropdown() {
-  const [open, setOpen] = useDialogState()
+  const [open, setOpen] = useDialogState();
+
+  // Defined user
+  const { user } = useAuth();
+  if (!user) return null;
 
   return (
     <>
@@ -31,9 +36,9 @@ export function ProfileDropdown() {
         <DropdownMenuContent className='w-56' align='end' forceMount>
           <DropdownMenuLabel className='font-normal'>
             <div className='flex flex-col gap-1.5'>
-              <p className='text-sm leading-none font-medium'>satnaing</p>
+              <p className='text-sm leading-none font-medium'>{ user.name }</p>
               <p className='text-xs leading-none text-muted-foreground'>
-                satnaingdev@gmail.com
+                  { user.email }
               </p>
             </div>
           </DropdownMenuLabel>
@@ -45,19 +50,19 @@ export function ProfileDropdown() {
                 {/*<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>*/}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to='/'>
-                Billing
-                {/*<DropdownMenuShortcut>⌘B</DropdownMenuShortcut>*/}
-              </Link>
-            </DropdownMenuItem>
+            {/*<DropdownMenuItem asChild>*/}
+            {/*  <Link to='/'>*/}
+            {/*    Billing*/}
+            {/*    /!*<DropdownMenuShortcut>⌘B</DropdownMenuShortcut>*!/*/}
+            {/*  </Link>*/}
+            {/*</DropdownMenuItem>*/}
             <DropdownMenuItem asChild>
               <Link to='/'>
                 Settings
                 {/*<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>*/}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant='destructive' onClick={() => setOpen(true)}>
