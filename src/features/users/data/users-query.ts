@@ -19,7 +19,7 @@ export type PaginatedUsers = {
   totalPages: number
 }
 
-const VALID_STATUS = new Set<UserStatus>(['active', 'inactive', 'invited', 'suspended'])
+const VALID_STATUS = new Set<UserStatus>(['active', 'inactive', 'suspended'])
 const VALID_ROLE = new Set<UserRole>(['superadmin', 'admin', 'cashier', 'manager'])
 
 function toNumber(v: unknown, fallback: number) {
