@@ -50,6 +50,7 @@ export const usersColumns: ColumnDef<User>[] = [
         'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
+    enableSorting: false,
     enableHiding: false,
   },
   {
@@ -59,10 +60,11 @@ export const usersColumns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => {
       const { firstName, lastName } = row.original
-      const fullName = `${firstName} ${lastName}`
+      const fullName = `${firstName} ${lastName}`.trim()
       return <LongText className='max-w-36'>{fullName}</LongText>
     },
     meta: { className: 'w-36' },
+    enableSorting: true,
   },
   {
     accessorKey: 'email',
@@ -72,6 +74,18 @@ export const usersColumns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <div className='w-fit ps-2 text-nowrap'>{row.getValue('email')}</div>
     ),
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Created At' />
+    ),
+    cell: ({ row }) => {
+      const date = row.original.createdAt
+      return <div>{date.toLocaleString()}</div>
+    },
+    enableSorting: true,
   },
   {
     accessorKey: 'phoneNumber',

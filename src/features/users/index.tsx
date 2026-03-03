@@ -1,21 +1,43 @@
 import { getRouteApi } from '@tanstack/react-router'
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { getUsers } from './data/users-query'
 import { UsersDialogs } from './components/users-dialogs'
 import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersProvider } from './components/users-provider'
 import { UsersTable } from './components/users-table'
-import { users } from './data/users'
 
 const route = getRouteApi('/_authenticated/users/')
 
 export function Users() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
+
+  const params = useMemo(
+    () => ({
+      page: (search.page as number) ?? 1,
+      pageSize: (search.pageSize as number) ?? 10,
+      username: (search.username as string) || undefined,
+      sortBy: (search.sortBy as string) || undefined,
+      sortOrder: search.sortOrder as 'asc' | 'desc' | undefined,
+    }),
+    [search]
+  )
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['users', params],
+    queryFn: () => getUsers(params),
+  })
+
+  const rows = data?.items ?? []
+  const totalRows = data?.total ?? 0
+  const pageCount = data?.totalPages ?? Math.max(1, Math.ceil(totalRows / params.pageSize))
 
   return (
     <UsersProvider>
@@ -38,7 +60,15 @@ export function Users() {
           </div>
           <UsersPrimaryButtons />
         </div>
-        <UsersTable data={users} search={search} navigate={navigate} />
+        <UsersTable
+          data={rows}
+          totalRows={totalRows}
+          pageCount={pageCount}
+          isLoading={isLoading}
+          isError={isError}
+          search={search}
+          navigate={navigate}
+        />
       </Main>
 
       <UsersDialogs />
