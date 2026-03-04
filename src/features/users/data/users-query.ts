@@ -115,3 +115,28 @@ export async function updateUser(payload: UpdateUserPayload){
   const res = await api.patch(`/members/${id}`, body)
   return res.data
 }
+
+/* Defined Delete */
+export async function deleteUser(id: string){
+  const res = await api.delete(`/members/${id}`)
+  return res.data
+}
+
+/* Defined Bulk Delete */
+export type BulkDeleteUsersPayload = {
+  ids: string[]
+}
+
+export type BulkDeleteUsersResponse = {
+  requestedCount: number
+  deletedCount: number
+  notFoundIds: string[]
+}
+
+export async function bulkDeleteUsers(payload: BulkDeleteUsersPayload){
+  const res = await api.delete<BulkDeleteUsersResponse>('/members/bulk', {
+    data: payload,
+  });
+
+  return res.data
+}
