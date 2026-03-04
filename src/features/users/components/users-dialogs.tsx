@@ -11,11 +11,11 @@ export function UsersDialogs() {
           <UsersActionDialog
             key={`user-edit-${currentRow.id}`}
             open={open === 'edit'}
-            onOpenChange={() => {
-              setOpen('edit')
-              setTimeout(() => {
+            onOpenChange={(isOpen) => {
+              setOpen(isOpen ? 'edit' : null)
+              if (!isOpen) {
                 setCurrentRow(null)
-              }, 500)
+              }
             }}
             currentRow={currentRow}
           />
@@ -23,11 +23,11 @@ export function UsersDialogs() {
           <UsersDeleteDialog
             key={`user-delete-${currentRow.id}`}
             open={open === 'delete'}
-            onOpenChange={() => {
-              setOpen('delete')
-              setTimeout(() => {
+            onOpenChange={(isOpen) => {
+              setOpen(isOpen ? 'delete' : null)
+              if (!isOpen) {
                 setCurrentRow(null)
-              }, 500)
+              }
             }}
             currentRow={currentRow}
           />
