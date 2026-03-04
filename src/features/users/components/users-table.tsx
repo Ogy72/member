@@ -131,8 +131,9 @@ export function UsersTable({
   })
 
   useEffect(() => {
+    if (isLoading) return
     ensurePageInRange(pageCount)
-  }, [pageCount, ensurePageInRange])
+  }, [isLoading, pageCount, ensurePageInRange])
 
   return (
     <div
