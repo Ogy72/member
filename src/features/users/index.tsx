@@ -33,6 +33,8 @@ export function Users() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['users', params],
     queryFn: () => getUsers(params),
+    staleTime: 0,
+    refetchOnMount: 'always',
   })
 
   const rows = data?.items ?? []

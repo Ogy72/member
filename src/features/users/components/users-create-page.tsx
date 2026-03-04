@@ -17,11 +17,18 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { UsersForm, type UserFormValues } from './users-form'
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from 'axios'
+import { createUser } from "@/features/users/data/users-query.ts";
 
 export function UsersCreatePage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [isDirty, setIsDirty] = useState(false)
   const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false)
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+  })
 
   const leavePage = () => {
     setConfirmLeaveOpen(false)
@@ -37,9 +44,28 @@ export function UsersCreatePage() {
   }
 
   const onSubmit = async (values: UserFormValues) => {
-    console.log('create payload', values)
-    toast.success('User created successfully.')
-    leavePage()
+    const payload = {
+      name: `${values.firstName} ${values.lastName}`.trim(),
+      email: values.email.trim().toLowerCase(),
+      password: values.password,
+    }
+
+    try {
+      await createUserMutation.mutateAsync(payload)
+      await queryClient.invalidateQueries({ queryKey: ['users'] })
+      toast.success("User created successfully.")
+      leavePage()
+    } catch (error: unknown) {
+      let message = "Failed to create the user"
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || error.message
+      } else if (error instanceof Error) {
+        message = error.message
+      }
+
+      toast.error(message)
+    }
   }
 
   return (
@@ -78,6 +104,7 @@ export function UsersCreatePage() {
               submitLabel='Create User'
               onCancel={handleAttemptLeave}
               onDirtyChange={setIsDirty}
+              isSubmitting={createUserMutation.isPending}
             />
           </CardContent>
         </Card>

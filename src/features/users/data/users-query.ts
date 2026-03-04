@@ -19,6 +19,12 @@ export type PaginatedUsers = {
   totalPages: number
 }
 
+export type CreateUserPayload = {
+  name: string
+  email: string
+  password: string
+}
+
 const VALID_STATUS = new Set<UserStatus>(['active', 'inactive', 'suspended'])
 const VALID_ROLE = new Set<UserRole>(['superadmin', 'admin', 'cashier', 'manager'])
 
@@ -86,4 +92,9 @@ export async function getUsers(params: GetUsersParams): Promise<PaginatedUsers> 
     pageSize: toNumber(meta.limit, params.pageSize),
     totalPages: toNumber(meta.totalPages, 1),
   }
+}
+
+export async function createUser(payload: CreateUserPayload){
+  const res = await api.post('/members', payload)
+  return res.data
 }

@@ -26,6 +26,7 @@ type UserFormProps = {
   submitLabel?: string
   onCancel?: () => void
   onDirtyChange?: (isDirty: boolean) => void
+  isSubmitting?: boolean
 }
 
 export function UsersForm({
@@ -34,6 +35,7 @@ export function UsersForm({
   submitLabel = 'Save Changes',
   onCancel,
   onDirtyChange,
+  isSubmitting = false,
 }: UserFormProps) {
   const isEdit = !!currentRow
 
@@ -199,7 +201,9 @@ export function UsersForm({
               Cancel
             </Button>
           )}
-          <Button type='submit'>{submitLabel}</Button>
+          <Button type='submit' disabled={isSubmitting}>
+              {submitLabel}
+          </Button>
         </div>
       </form>
     </Form>
