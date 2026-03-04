@@ -65,142 +65,133 @@ export function UsersForm({
       <form
         id='user-form'
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-4 px-0.5'
+        className='space-y-5 px-0.5'
       >
-        <FormField
-          control={form.control}
-          name='firstName'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>First Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder='John'
-                  className='col-span-4'
-                  autoComplete='off'
-                  {...field}
+        <div className='grid gap-4 md:grid-cols-2'>
+          <FormField
+            control={form.control}
+            name='firstName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input placeholder='John' autoComplete='off' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='lastName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input placeholder='Doe' autoComplete='off' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='username'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder='john_doe' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='phoneNumber'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input placeholder='+123456789' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem className='md:col-span-2'>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder='john.doe@gmail.com' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='role'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Role</FormLabel>
+                <SelectDropdown
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                  placeholder='Select a role'
+                  items={roles.map(({ label, value }) => ({
+                    label,
+                    value,
+                  }))}
                 />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='lastName'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Last Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder='Doe'
-                  className='col-span-4'
-                  autoComplete='off'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='username'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Username</FormLabel>
-              <FormControl>
-                <Input placeholder='john_doe' className='col-span-4' {...field} />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='email'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Email</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder='john.doe@gmail.com'
-                  className='col-span-4'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='phoneNumber'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder='+123456789' className='col-span-4' {...field} />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='role'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Role</FormLabel>
-              <SelectDropdown
-                defaultValue={field.value}
-                onValueChange={field.onChange}
-                placeholder='Select a role'
-                className='col-span-4'
-                items={roles.map(({ label, value }) => ({
-                  label,
-                  value,
-                }))}
-              />
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Password</FormLabel>
-              <FormControl>
-                <PasswordInput
-                  placeholder='e.g., S3cur3P@ssw0rd'
-                  className='col-span-4'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='confirmPassword'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-              <FormLabel className='col-span-2 text-end'>Confirm Password</FormLabel>
-              <FormControl>
-                <PasswordInput
-                  disabled={!isPasswordTouched}
-                  placeholder='e.g., S3cur3P@ssw0rd'
-                  className='col-span-4'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className='col-span-4 col-start-3' />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className='hidden md:block' />
+
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <PasswordInput placeholder='e.g., S3cur3P@ssw0rd' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='confirmPassword'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    disabled={!isPasswordTouched}
+                    placeholder='e.g., S3cur3P@ssw0rd'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className='flex items-center justify-end gap-2'>
           {onCancel && (
