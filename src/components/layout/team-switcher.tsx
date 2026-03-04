@@ -7,7 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuTrigger,
+  // DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
   SidebarMenu,
@@ -32,7 +32,7 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          {/*<DropdownMenuTrigger asChild>*/}
             <SidebarMenuButton
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
@@ -48,7 +48,7 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
               </div>
               <ChevronsUpDown className='ms-auto' />
             </SidebarMenuButton>
-          </DropdownMenuTrigger>
+          {/*</DropdownMenuTrigger>*/}
           <DropdownMenuContent
             className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
             align='start'

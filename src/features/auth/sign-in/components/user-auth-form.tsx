@@ -83,7 +83,8 @@ export function UserAuthForm({
                 message = error.message
             }
 
-            toast.error(message)
+            toast.error(message);
+            setIsLoading(false);
         }
     }
 

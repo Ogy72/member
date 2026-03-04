@@ -39,9 +39,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Logout Function
     async function logout() {
-        await authClient.logout();
-        setUser(null);
-        window.location.href = "/sign-in";
+        try {
+            await authClient.logout();
+        } catch {
+            // Keep local auth state consistent even if server logout fails.
+            tokenStore.clear();
+        } finally {
+            setUser(null);
+        }
     }
 
     if (!initialized) return null;
