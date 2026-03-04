@@ -14,11 +14,11 @@ import { TeamSwitcher } from './team-switcher'
 import { useAuth } from "@/context/use-auth.ts";
 
 export function AppSidebar() {
-    const { collapsible, variant } = useLayout();
+  const { collapsible, variant } = useLayout()
 
-    // Defined user
-    const { user } = useAuth();
-    if (!user) return sidebarData.user;
+  // Defined user
+  const { user } = useAuth()
+  if (!user) return null
 
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
