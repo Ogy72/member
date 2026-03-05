@@ -19,12 +19,6 @@ export type PaginatedUsers = {
   totalPages: number
 }
 
-export type CreateUserPayload = {
-  name: string
-  email: string
-  password: string
-}
-
 const VALID_STATUS = new Set<UserStatus>(['active', 'inactive', 'suspended'])
 const VALID_ROLE = new Set<UserRole>(['superadmin', 'admin', 'cashier', 'manager'])
 
@@ -63,6 +57,8 @@ function normalizeUser(raw: Record<string, unknown>, i: number): User {
   }
 }
 
+
+/* Defined Get Data Users */
 export async function getUsers(params: GetUsersParams): Promise<PaginatedUsers> {
   const res = await api.get('/members', {
     params: {
@@ -94,7 +90,53 @@ export async function getUsers(params: GetUsersParams): Promise<PaginatedUsers> 
   }
 }
 
+/* Defined Create User */
+export type CreateUserPayload = {
+  name: string
+  email: string
+  password: string
+}
+
 export async function createUser(payload: CreateUserPayload){
   const res = await api.post('/members', payload)
+  return res.data
+}
+
+/* Defined Update */
+export type UpdateUserPayload = {
+  id: string
+  name: string
+  email: string
+  password?: string
+}
+
+export async function updateUser(payload: UpdateUserPayload){
+  const { id, ...body } = payload
+  const res = await api.patch(`/members/${id}`, body)
+  return res.data
+}
+
+/* Defined Delete */
+export async function deleteUser(id: string){
+  const res = await api.delete(`/members/${id}`)
+  return res.data
+}
+
+/* Defined Bulk Delete */
+export type BulkDeleteUsersPayload = {
+  ids: string[]
+}
+
+export type BulkDeleteUsersResponse = {
+  requestedCount: number
+  deletedCount: number
+  notFoundIds: string[]
+}
+
+export async function bulkDeleteUsers(payload: BulkDeleteUsersPayload){
+  const res = await api.delete<BulkDeleteUsersResponse>('/members/bulk', {
+    data: payload,
+  });
+
   return res.data
 }

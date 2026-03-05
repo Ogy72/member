@@ -1,8 +1,11 @@
 'use client'
 
+import axios from 'axios'
+import { toast } from "sonner"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { deleteUser } from "../data/users-query.ts"
 import { useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { showSubmittedData } from '@/lib/show-submitted-data'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,20 +24,46 @@ export function UsersDeleteDialog({
   currentRow,
 }: UserDeleteDialogProps) {
   const [value, setValue] = useState('')
+  const queryClient = useQueryClient()
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+  })
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (value.trim() !== currentRow.username) return
 
-    onOpenChange(false)
-    showSubmittedData(currentRow, 'The following user has been deleted:')
+    try {
+      await deleteUserMutation.mutateAsync(currentRow.id)
+      await queryClient.invalidateQueries({ queryKey: ['users'] })
+
+      onOpenChange(false)
+      setValue('')
+      toast.success("User deleted successfully.")
+    } catch (error: unknown) {
+      let message = 'Failed to delete user'
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || error.message
+      } else if (error instanceof Error) {
+        message = error.message
+      }
+
+      toast.error(message)
+    }
+  }
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) setValue('')
+    onOpenChange(nextOpen)
   }
 
   return (
     <ConfirmDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       handleConfirm={handleDelete}
       disabled={value.trim() !== currentRow.username}
+      isLoading={deleteUserMutation.isPending}
       title={
         <span className='text-destructive'>
           <AlertTriangle

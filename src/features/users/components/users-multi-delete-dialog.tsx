@@ -1,10 +1,13 @@
 'use client'
 
+import axios from 'axios'
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { bulkDeleteUsers } from "../data/users-query.ts"
+import { type User } from "../data/schema.ts"
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
 import { AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
-import { sleep } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,36 +27,67 @@ export function UsersMultiDeleteDialog<TData>({
   table,
 }: UserMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
+  const queryClient = useQueryClient()
+  const bulkDeleteMutation = useMutation({
+    mutationFn: bulkDeleteUsers,
+  })
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
+  const selectedIds = selectedRows
+      .map((row) => (row.original as User).id)
+      .filter((id): id is string => Boolean(id))
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (value.trim() !== CONFIRM_WORD) {
       toast.error(`Please type "${CONFIRM_WORD}" to confirm.`)
       return
     }
 
-    onOpenChange(false)
+    if (selectedIds.length === 0) {
+      toast.error("No users selected")
+      return
+    }
 
-    toast.promise(sleep(2000), {
-      loading: 'Deleting users...',
-      success: () => {
-        setValue('')
-        table.resetRowSelection()
-        return `Deleted ${selectedRows.length} ${
-          selectedRows.length > 1 ? 'users' : 'user'
-        }`
-      },
-      error: 'Error',
-    })
+    try {
+      const result = await bulkDeleteMutation.mutateAsync({ ids: selectedIds })
+      await queryClient.invalidateQueries({ queryKey: ["users"] })
+
+      onOpenChange(false)
+      setValue('')
+      table.resetRowSelection()
+
+      if (result.notFoundIds?.length) {
+        toast.warning(
+            `Deleted ${result.deletedCount}/${result.requestedCount}. Some users were not found`,
+        )
+      } else {
+        toast.success(`Deleted ${result.deletedCount} user(s)`)
+      }
+    } catch (error: unknown) {
+      let message = "Failed to delete users"
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || error.message
+      } else if (error instanceof Error) {
+        message = error.message
+      }
+
+      toast.error(message)
+    }
+  }
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) setValue('')
+    onOpenChange(nextOpen)
   }
 
   return (
     <ConfirmDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD}
+      isLoading={bulkDeleteMutation.isPending}
       title={
         <span className='text-destructive'>
           <AlertTriangle
